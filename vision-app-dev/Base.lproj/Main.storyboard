@@ -25,7 +25,7 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jeb-Zr-XzW">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" red="0.41945424679999999" green="0.58069151640000005" blue="0.25099626180000001" alpha="0.67136665239726023" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MKS-DF-4gG" customClass="RoundedShadowBtn" customModule="vision_app_dev" customModuleProvider="target">
                                 <rect key="frame" x="20" y="611" width="85" height="36"/>
@@ -38,6 +38,9 @@
                                 <state key="normal" title="Flash Off">
                                     <color key="titleColor" red="0.84705882352941175" green="0.27843137254901962" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="flashBtnWasPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="tFt-2f-YnA"/>
+                                </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sr2-gs-nNQ" customClass="RoundedShadowImageView" customModule="vision_app_dev" customModuleProvider="target">
                                 <rect key="frame" x="280" y="519" width="75" height="128"/>
@@ -76,6 +79,10 @@
                                     <constraint firstItem="N10-bq-Fit" firstAttribute="top" secondItem="xZR-ei-Ycp" secondAttribute="top" constant="8" id="Zfv-NK-3bY"/>
                                 </constraints>
                             </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="qtj-of-lem">
+                                <rect key="frame" x="299" y="565" width="37" height="37"/>
+                                <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -84,8 +91,10 @@
                             <constraint firstItem="Jeb-Zr-XzW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="EDc-u5-ysH"/>
                             <constraint firstItem="Jeb-Zr-XzW" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="G5a-N8-qse"/>
                             <constraint firstItem="xZR-ei-Ycp" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="30" id="Kds-7a-7V6"/>
+                            <constraint firstItem="qtj-of-lem" firstAttribute="centerY" secondItem="sr2-gs-nNQ" secondAttribute="centerY" id="PfR-Xq-fFC"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="MKS-DF-4gG" secondAttribute="bottom" constant="20" id="RYd-D8-Vgd"/>
                             <constraint firstItem="xZR-ei-Ycp" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="YLu-SQ-PEK"/>
+                            <constraint firstItem="qtj-of-lem" firstAttribute="centerX" secondItem="sr2-gs-nNQ" secondAttribute="centerX" id="eia-md-Zxl"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="sr2-gs-nNQ" secondAttribute="trailing" constant="20" id="elh-ge-Ggs"/>
                             <constraint firstItem="MKS-DF-4gG" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="jsu-OX-fie"/>
                             <constraint firstItem="Jeb-Zr-XzW" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="lR0-O5-xJU"/>
@@ -100,6 +109,7 @@
                         <outlet property="flashButn" destination="MKS-DF-4gG" id="W0R-8a-fC2"/>
                         <outlet property="identificationLabel" destination="eWL-pL-Ycb" id="JUu-Nk-sgu"/>
                         <outlet property="roundedLabelView" destination="xZR-ei-Ycp" id="1il-sV-JXH"/>
+                        <outlet property="spinner" destination="qtj-of-lem" id="npr-k6-qws"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

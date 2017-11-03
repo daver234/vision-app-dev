@@ -11,13 +11,22 @@ import AVFoundation
 import CoreML
 import Vision
 
+enum FlashState {
+    case off
+    case on
+}
+
 class CameraVC: UIViewController {
     
     var captureSession: AVCaptureSession!
     var cameraOutput: AVCapturePhotoOutput!
     var previewLayer: AVCaptureVideoPreviewLayer!
     var photoData: Data?
+    var flashControlState: FlashState = .off
     
+    var speechSythesizer = AVSpeechSynthesizer()
+    
+    @IBOutlet weak var spinner: UIActivityIndicatorView!
     @IBOutlet weak var cameraView: UIView!
     @IBOutlet weak var confidenceLabel: UILabel!
     @IBOutlet weak var identificationLabel: UILabel!
@@ -34,6 +43,8 @@ class CameraVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         previewLayer.frame = cameraView.bounds
+        speechSythesizer.delegate = self
+        spinner.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,10 +81,20 @@ class CameraVC: UIViewController {
     }
     
     @objc func didTapCameraView() {
+        self.cameraView.isUserInteractionEnabled = false
+        self.spinner.isHidden = false
+        self.spinner.startAnimating()
+        
         let settings = AVCapturePhotoSettings()
 //        let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
 //        let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType, kCVPixelBufferWidthKey as String: 160, kCVPixelBufferHeightKey as String: 160]
         settings.previewPhotoFormat = settings.embeddedThumbnailPhotoFormat
+        
+        if flashControlState == .off {
+             settings.flashMode = .off
+        } else {
+            settings.flashMode = .on
+        }
         cameraOutput.capturePhoto(with: settings, delegate: self)
     }
     
@@ -82,16 +103,39 @@ class CameraVC: UIViewController {
         for classification in results {
             print(classification.identifier)
             if classification.confidence < 0.5 {
-                self.identificationLabel.text = "I'm not sure what this is please try again."
+                let unknownObjectMessage = "I'm not sure what this is please try again."
+                self.identificationLabel.text = unknownObjectMessage
+                sythesizeSpeech(fromString: unknownObjectMessage)
                 self.confidenceLabel.text = ""
                 break
             } else {
-                self.identificationLabel.text = classification.identifier
-                self.confidenceLabel.text = "Confidence: \(Int(classification.confidence * 100))%"
+                let identification = classification.identifier
+                let confidence = Int(classification.confidence * 100)
+                self.identificationLabel.text = identification
+                self.confidenceLabel.text = "Confidence: \(confidence)%"
+                let completeSentence = "This looks like a \(identification) and I'm \(confidence) percent sure."
+                sythesizeSpeech(fromString: completeSentence)
                 break
             }
         }
     }
+    
+    func sythesizeSpeech(fromString string: String) {
+        let speechUtterance = AVSpeechUtterance(string: string)
+        speechSythesizer.speak(speechUtterance)
+    }
+    
+    @IBAction func flashBtnWasPressed(_ sender: Any) {
+        switch flashControlState {
+        case .off:
+            flashButn.setTitle("Flash On", for: .normal)
+            flashControlState = .on
+        case .on:
+            flashButn.setTitle("Flash Off", for: .normal)
+            flashControlState = .off
+        }
+    }
+    
 }
 
 extension CameraVC: AVCapturePhotoCaptureDelegate {
@@ -113,6 +157,14 @@ extension CameraVC: AVCapturePhotoCaptureDelegate {
             let image = UIImage(data: photoData!)
             self.captureImageview.image = image
         }
+    }
+}
+
+extension CameraVC: AVSpeechSynthesizerDelegate {
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        self.cameraView.isUserInteractionEnabled = true
+        self.spinner.stopAnimating()
+        self.spinner.isHidden = true
     }
 }
 
